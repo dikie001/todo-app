@@ -19,10 +19,11 @@ const Signup = () => {
     } catch (e) {
       console.log(e);
     }
-    toast.success("Account Created Successfully!", {
+    const load = toast.success("Account Created Successfully!", {
       id: loadingT,
     });
-    setTimeout(() => navigate("/login"), 1200);
+    setTimeout(()=>toast.success("You are now logged in!", {id:load}),1200)
+    setTimeout(() => navigate("/todo"), 1500);
   };
   const googleSignUp = async () => {
     const loadingToast = toast.loading("Signing you up...");
