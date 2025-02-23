@@ -1,99 +1,111 @@
-import React from "react";
+import React, { useState } from "react";
 import { auth, googleProvider } from "../config/firebase";
 import { createUserWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 import { Link, useNavigate } from "react-router-dom";
 import { SiGoogle } from "react-icons/si";
-import { useState } from "react";
 import { toast } from "react-hot-toast";
 
 const Signup = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [username, setUsername] = useState("");
 
-  const submit = async () => {
-    const loadingT = toast.loading("Signing you up..");
-    try {
-      await createUserWithEmailAndPassword(auth, email, password, username);
-    } catch (e) {
-      console.log(e);
-    }
-    const load = toast.success("Account Created Successfully!", {
-      id: loadingT,
-    });
-    setTimeout(()=>toast.success("You are now logged in!", {id:load}),1200)
-    setTimeout(() => navigate("/todo"), 1500);
+  // Function to validate email format
+  const isValidEmail = (email) => {
+    return /\S+@\S+\.\S+/.test(email);
   };
-  const googleSignUp = async () => {
+
+  const handleSignup = async () => {
     const loadingToast = toast.loading("Signing you up...");
+    
+    //  Validate fields
+    if (!email || !password) {
+      toast.error("Please fill out all fields", { id: loadingToast });
+      return;
+    }
+
+    if (!isValidEmail(email)) {
+      toast.error("Invalid email format!", { id: loadingToast });
+      return;
+    }
+
+    if (password.length < 4) {
+      toast.error("Password must be at least 4 characters!", { id: loadingToast });
+      return;
+    }
+
     try {
-      await signInWithPopup(auth, googleProvider);
-    } catch (e) {
-      console.log(e);
-      let errorMessage;
+      await createUserWithEmailAndPassword(auth, email, password);
+      toast.success("Account created successfully!", { id: loadingToast });
+
+      setTimeout(() => {
+        toast.success("You are now logged in!");
+        navigate("/todo");
+      }, 2000);
+    } catch (error) {
       if (error.code === "auth/email-already-in-use") {
-        errorMessage = "This email is already registered";
+        toast.error("Email is already in use!", { id: loadingToast });
+      } else {
+        toast.error(error.message || "Signup failed. Try again.", { id: loadingToast });
       }
     }
-    toast.success("Account Created Successfully", {
-      id: loadingToast,
-    });
-  navigate("/login")
   };
+
+  const handleGoogleSignup = async () => {
+    const loadingToast = toast.loading("Signing you up with Google...");
+    
+    try {
+      await signInWithPopup(auth, googleProvider);
+      toast.success("Signed up successfully!", { id: loadingToast });
+      navigate("/todo");
+    } catch (error) {
+      toast.error(error.message || "Google signup failed.", { id: loadingToast });
+    }
+  };
+
   return (
-    <div className="bg-gradient-to-r relative from-gray-900 via-purple-900 to-black min-h-screen h-screen flex flex-col justify-center items-center ">
-      <h1 className="text-2xl text-cyan-200 absolute top-2 left-2 font-bold">
-        flex
-      </h1>
+    <div className="bg-gradient-to-r from-gray-900 via-purple-900 to-black min-h-screen flex flex-col justify-center items-center">
       <h1 className="text-4xl font-extrabold text-white">Create an Account</h1>
 
-      <div className="flex flex-col gap-4 mt-4 ">
-        <input
-          type="text"
-          placeholder="Enter your username"
-          onChange={(e) => setUsername(e.target.value)}
-          className="w-100 p-3 rounded-lg bg-gray-800 autofill:bg-gray-800 bg-opacity-50 border border-purple-800 text-white placeholder-gray-400 focus:ring-2 focus:ring-purple-500 focus:outline-none shadow-md shadow-purple-900"
-        />
-
+      <div className="flex flex-col gap-4 mt-4">
         <input
           type="email"
+          value={email}
           placeholder="Enter your email"
           onChange={(e) => setEmail(e.target.value)}
-          required
-          className="w-full p-3 rounded-lg bg-gray-800 autofill:bg-gray-800 bg-opacity-50 border border-purple-800 text-white placeholder-gray-400 focus:ring-2 focus:ring-purple-500 focus:outline-none shadow-md shadow-purple-900"
+          className="w-100 p-3 rounded-lg bg-gray-800 border border-purple-800 text-white placeholder-gray-400 focus:ring-2 focus:ring-purple-500 focus:outline-none shadow-md"
         />
 
         <input
           type="password"
-          onChange={(e) => setPassword(e.target.value)}
-          className="w-full p-3 rounded-lg bg-gray-800 autofill:bg-gray-800 bg-opacity-50 border border-purple-800 text-white placeholder-gray-400 focus:ring-2 focus:ring-purple-500 focus:outline-none shadow-md shadow-purple-900"
+          value={password}
           placeholder="Create a password"
-          required
+          onChange={(e) => setPassword(e.target.value)}
+          className="w-full p-3 rounded-lg bg-gray-800 border border-purple-800 text-white placeholder-gray-400 focus:ring-2 focus:ring-purple-500 focus:outline-none shadow-md"
         />
+
         <button
-          className="w-full p-3 rounded-lg bg-purple-600 text-white font-semibold shadow-md shadow-purple-900 hover:bg-purple-800 outline-none"
-          type="submit"
-          onClick={submit}
+          className="w-full p-3 rounded-lg bg-purple-600 text-white font-semibold shadow-md hover:bg-purple-800"
+          onClick={handleSignup}
         >
           Sign up
         </button>
-        <h1 className="text-2xl font-bold text-white flex flex-col justify-center items-center">
-          OR
-        </h1>
+
+        <h1 className="text-2xl font-bold text-white text-center">OR</h1>
+
         <button
-          onClick={googleSignUp}
-          className="w-full p-3 rounded-lg border-2 border-purple-700 text-white font-bold hover:bg-purple-700"
+          onClick={handleGoogleSignup}
+          className="w-full p-3 rounded-lg border-2 border-purple-700 text-white font-bold hover:bg-purple-700 flex items-center justify-center"
         >
-          <SiGoogle className="inline-block  mx-3 text-cyan-200" size={20} />
-          Sign up with google
+          <SiGoogle className="mr-3 text-cyan-200" size={20} />
+          Sign up with Google
         </button>
 
         <p className="text-sm text-purple-300">
           Already have an account?{" "}
           <Link to="/login">
             <span className="text-green-400 underline font-bold hover:text-white">
-              log in
+              Log in
             </span>
           </Link>
         </p>
