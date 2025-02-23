@@ -17,14 +17,17 @@ const Login = () => {
   const userLogin = async ()=>{
     const loadingToast = toast.loading("logging in")
     try{
-      await signInWithEmailAndPassword(auth, username, password)
+      const userCredentials = await signInWithEmailAndPassword(auth, username, password)
     }catch(e){
       console.log(e)
-      toast.error("wrong credentials");
+      toast.error("wrong credentials", {
+        id:loadingToast
+      });
       return;
     }
     toast.success("logged in successfully!",{
       id:loadingToast,
+      
   });
     navigate("/todo")
   }
