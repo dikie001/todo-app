@@ -39,7 +39,7 @@ const Signup = () => {
     toast.success("Account Created Successfully", {
       id: loadingToast,
     });
-    setTimeout(() => navigate("/login"), 1200);
+  navigate("/login")
   };
   return (
     <div className="bg-gradient-to-r relative from-gray-900 via-purple-900 to-black min-h-screen h-screen flex flex-col justify-center items-center ">
