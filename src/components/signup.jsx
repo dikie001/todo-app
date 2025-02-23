@@ -1,33 +1,44 @@
 import React from "react";
 import { auth, googleProvider } from "../config/firebase";
 import { createUserWithEmailAndPassword, signInWithPopup } from "firebase/auth";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { SiGoogle } from "react-icons/si";
-import { SiFacebook } from "react-icons/si";
 import { useState } from "react";
 import {toast} from 'react-hot-toast';
 
 
 const Signup = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
   const submit = async ()=>{
+    const loadingT = toast.loading("Signing you up..")
     try{
+      
     await createUserWithEmailAndPassword(auth, email, password, username);
     }catch(e){
       console.log(e)
     }
-    toast.success("login successfull")
+    toast.success("login successfull",{
+      id:loadingT
+    });
+    navigate("/todo");
+
 
   }
   const googleSignUp = async ()=>{
+    const loadingToast = toast.loading("Signing you up...")
     try{
       await signInWithPopup(auth, googleProvider)
     }catch(e){
       console.log(e)
+     
     }
-    toast.success("Sign up successfull!")
+    toast.success("Sign up successfull!",{
+      id:loadingToast
+    })
+    navigate("/login")
 
   }
   return (
@@ -68,11 +79,11 @@ const Signup = () => {
         <h1 className="text-2xl font-bold text-white flex flex-col justify-center items-center">
           OR
         </h1>
-        <button className="w-full p-3 rounded-lg border-2 border-purple-700 text-white font-bold hover:bg-purple-700">
+        <button onClick={googleSignUp} className="w-full p-3 rounded-lg border-2 border-purple-700 text-white font-bold hover:bg-purple-700">
           <SiGoogle
             className="inline-block  mx-3 text-cyan-200"
             size={20}
-            onClick={googleSignUp}
+            
           />
           Sign up with google
         </button>
