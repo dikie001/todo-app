@@ -76,7 +76,7 @@ const TodoApp = () => {
 
   return (
     <>
-        <div className="relative bg-gradient-to-br from-[#1a032a] via-[#3b0764] to-[#0c011e] h-fit flex flex-col  items-center">
+        <div className="relative bg-gradient-to-br from-[#1a032a] via-[#3b0764] to-[#0c011e] h-screen flex flex-col  items-center">
       <div>
         <h1 className="text-3xl absolute cursor-pointer font-bold top-1 left-1 text-cyan-300">
           flex
@@ -148,8 +148,8 @@ const TodoApp = () => {
           </div>
         </div>
       )}
-      <div>
-        <h1>dikie</h1>
+      <div className="">
+        <h1 className="text-gray-500 ">powered by dikie</h1>
     </div>
     </div>
     
