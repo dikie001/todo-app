@@ -81,7 +81,7 @@ const Login = () => {
   };
   return (
     <div className="relative bg-gradient-to-r from-gray-900 via-purple-900 to-black min-h-screen h-screen flex flex-col justify-center items-center ">
-      <h1 className="text-2xl text-cyan-200 absolute top-2 left-2 font-bold">
+      <h1 className="text-3xl text-cyan-200 absolute top-2 left-2 font-bold">
         flex
       </h1>
       <h1 className="text-4xl font-extrabold text-white">Log in</h1>

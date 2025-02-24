@@ -64,7 +64,10 @@ const Signup = () => {
   };
 
   return (
-    <div className="bg-gradient-to-r from-gray-900 via-purple-900 to-black min-h-screen flex flex-col justify-center items-center">
+    <div className="relative bg-gradient-to-r from-gray-900 via-purple-900 to-black min-h-screen flex flex-col justify-center items-center">
+        <h1 className="text-3xl absolute cursor-pointer font-bold top-1 left-1 text-cyan-300">
+          flex
+        </h1>
       <h1 className="text-4xl font-extrabold text-white">Create an Account</h1>
 
       <div className="flex flex-col gap-4 mt-4">
